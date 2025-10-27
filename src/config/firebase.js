@@ -5,13 +5,13 @@ import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyASSE8GIs-OZnqADAH46yO0P9M7XugAL1w",
-  authDomain: "quran-memorize-cf544.firebaseapp.com",
-  projectId: "quran-memorize-cf544",
-  storageBucket: "quran-memorize-cf544.firebasestorage.app",
-  messagingSenderId: "244527732530",
-  appId: "1:244527732530:web:6c51ca480c79509fee692b",
-  measurementId: "G-C1BESQ78FH"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
