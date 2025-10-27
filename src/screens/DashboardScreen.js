@@ -83,7 +83,18 @@ const DashboardScreen = () => {
         <div style={styles.section}>
           <h3 style={styles.sectionTitle}>Quick Actions</h3>
           <div style={styles.actionsGrid}>
-            <div style={styles.actionCard}>
+            <div 
+              style={styles.actionCard}
+              onClick={() => navigate('/surahs')}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = theme.shadows.lg;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = theme.shadows.sm;
+              }}
+            >
               <div style={styles.actionIcon}>📚</div>
               <h4 style={styles.actionTitle}>Browse Surahs</h4>
               <p style={styles.actionText}>Choose a surah to start memorizing</p>

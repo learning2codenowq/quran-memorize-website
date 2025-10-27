@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import DashboardScreen from './screens/DashboardScreen';
+import SurahListScreen from './screens/SurahListScreen';
+import QuranReaderScreen from './screens/QuranReaderScreen';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -49,7 +51,22 @@ function App() {
               </ProtectedRoute>
             } 
           />
-          
+          <Route 
+            path="/surahs" 
+            element={
+              <ProtectedRoute>
+                <SurahListScreen />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/quran-reader/:surahId" 
+            element={
+              <ProtectedRoute>
+                <QuranReaderScreen />
+              </ProtectedRoute>
+            } 
+          />
           {/* Default Route */}
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
