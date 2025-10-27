@@ -6,6 +6,7 @@ import SignupScreen from './screens/SignupScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import SurahListScreen from './screens/SurahListScreen';
 import QuranReaderScreen from './screens/QuranReaderScreen';
+import SettingsScreen from './screens/SettingsScreen';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -64,6 +65,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <QuranReaderScreen />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/settings" 
+            element={
+              <ProtectedRoute>
+                <SettingsScreen />
               </ProtectedRoute>
             } 
           />
