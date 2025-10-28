@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { theme } from '../styles/theme';
+import { useTheme } from '../hooks/useTheme';
 import StorageService from '../services/StorageService';
 import { 
   BookOpen, 
@@ -18,6 +18,7 @@ import {
 const DashboardScreen = () => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  const theme = useTheme();
   const [stats, setStats] = useState({
     totalMemorized: 0,
     todayProgress: 0,
@@ -105,6 +106,301 @@ const DashboardScreen = () => {
 
   const getMaxProgress = () => {
     return Math.max(...weeklyData.map(d => d.count), stats.dailyGoal);
+  };
+
+  const styles = {
+    container: {
+      minHeight: '100vh',
+      backgroundColor: theme.colors.backgroundLight,
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+    },
+    header: {
+      background: theme.gradients.primary,
+      padding: '16px 0',
+      boxShadow: theme.shadows.md,
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+    },
+    headerContent: {
+      maxWidth: '1400px',
+      margin: '0 auto',
+      padding: '0 24px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    logo: {
+      fontSize: '24px',
+      fontWeight: '700',
+      color: theme.colors.white,
+      margin: 0,
+    },
+    headerRight: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '16px',
+    },
+    headerButton: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      padding: '8px 16px',
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      color: theme.colors.white,
+      border: 'none',
+      borderRadius: theme.borderRadius.md,
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: '600',
+      transition: 'all 0.3s',
+    },
+    userEmail: {
+      color: theme.colors.white,
+      fontSize: '14px',
+    },
+    logoutButton: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: '8px 12px',
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      color: theme.colors.white,
+      border: 'none',
+      borderRadius: theme.borderRadius.md,
+      cursor: 'pointer',
+      transition: 'all 0.3s',
+    },
+    mainContent: {
+      maxWidth: '1400px',
+      margin: '0 auto',
+      padding: '40px 24px',
+    },
+    welcomeSection: {
+      marginBottom: '32px',
+    },
+    welcomeTitle: {
+      fontSize: '32px',
+      fontWeight: '700',
+      color: theme.colors.textPrimary,
+      margin: '0 0 8px 0',
+    },
+    welcomeSubtitle: {
+      fontSize: '18px',
+      color: theme.colors.textSecondary,
+      margin: 0,
+    },
+    statsGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+      gap: '20px',
+      marginBottom: '40px',
+    },
+    statCard: {
+      backgroundColor: theme.colors.cardBackground,
+      padding: '24px',
+      borderRadius: theme.borderRadius.lg,
+      boxShadow: theme.shadows.sm,
+      textAlign: 'center',
+      transition: 'transform 0.2s',
+    },
+    statIconContainer: {
+      width: '56px',
+      height: '56px',
+      margin: '0 auto 16px',
+      borderRadius: '50%',
+      backgroundColor: theme.colors.backgroundLight,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    statNumber: {
+      fontSize: '32px',
+      fontWeight: '700',
+      color: theme.colors.primary,
+      margin: '0 0 8px 0',
+    },
+    statLabel: {
+      fontSize: '14px',
+      color: theme.colors.textSecondary,
+      margin: 0,
+    },
+    miniProgressBar: {
+      width: '100%',
+      height: '4px',
+      backgroundColor: theme.colors.gray200,
+      borderRadius: '2px',
+      overflow: 'hidden',
+      marginTop: '12px',
+    },
+    miniProgressFill: {
+      height: '100%',
+      background: theme.gradients.success,
+      transition: 'width 0.3s',
+    },
+    continueCard: {
+      background: theme.gradients.primary,
+      borderRadius: theme.borderRadius.xl,
+      padding: '32px',
+      marginBottom: '40px',
+      boxShadow: theme.shadows.lg,
+    },
+    continueContent: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '24px',
+    },
+    continueIcon: {
+      width: '64px',
+      height: '64px',
+      borderRadius: '50%',
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    },
+    continueText: {
+      flex: 1,
+      color: theme.colors.white,
+    },
+    continueTitle: {
+      fontSize: '24px',
+      fontWeight: '700',
+      margin: '0 0 8px 0',
+    },
+    continueSubtitle: {
+      fontSize: '16px',
+      opacity: 0.9,
+      margin: 0,
+    },
+    continueButton: {
+      padding: '14px 32px',
+      backgroundColor: theme.colors.white,
+      color: theme.colors.primary,
+      border: 'none',
+      borderRadius: theme.borderRadius.full,
+      fontSize: '16px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      boxShadow: theme.shadows.md,
+      transition: 'all 0.2s',
+    },
+    section: {
+      marginBottom: '40px',
+    },
+    sectionHeader: {
+      marginBottom: '24px',
+    },
+    sectionTitleRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      marginBottom: '8px',
+    },
+    sectionTitle: {
+      fontSize: '24px',
+      fontWeight: '700',
+      color: theme.colors.textPrimary,
+      margin: 0,
+    },
+    sectionSubtitle: {
+      fontSize: '14px',
+      color: theme.colors.textSecondary,
+      margin: 0,
+    },
+    chartCard: {
+      backgroundColor: theme.colors.cardBackground,
+      padding: '32px',
+      borderRadius: theme.borderRadius.lg,
+      boxShadow: theme.shadows.sm,
+    },
+    chart: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      justifyContent: 'space-between',
+      gap: '12px',
+      height: '240px',
+    },
+    chartBar: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '8px',
+    },
+    chartBarContainer: {
+      flex: 1,
+      width: '100%',
+      display: 'flex',
+      alignItems: 'flex-end',
+      justifyContent: 'center',
+    },
+    chartBarFill: {
+      width: '100%',
+      minHeight: '4px',
+      borderRadius: '4px 4px 0 0',
+      transition: 'all 0.3s',
+      display: 'flex',
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      paddingTop: '8px',
+    },
+    chartBarValue: {
+      fontSize: '12px',
+      fontWeight: '700',
+      color: theme.colors.white,
+    },
+    chartBarLabel: {
+      fontSize: '12px',
+      color: theme.colors.textSecondary,
+    },
+    actionsGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+      gap: '20px',
+    },
+    actionCard: {
+      backgroundColor: theme.colors.cardBackground,
+      padding: '32px',
+      borderRadius: theme.borderRadius.lg,
+      boxShadow: theme.shadows.sm,
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+    },
+    actionIconContainer: {
+      marginBottom: '16px',
+    },
+    actionTitle: {
+      fontSize: '20px',
+      fontWeight: '600',
+      color: theme.colors.textPrimary,
+      margin: '0 0 8px 0',
+    },
+    actionText: {
+      fontSize: '14px',
+      color: theme.colors.textSecondary,
+      margin: 0,
+    },
+    loadingContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100vh',
+    },
+    spinner: {
+      width: '50px',
+      height: '50px',
+      border: `4px solid ${theme.colors.gray200}`,
+      borderTop: `4px solid ${theme.colors.primary}`,
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite',
+    },
+    loadingText: {
+      marginTop: '20px',
+      fontSize: '16px',
+      color: theme.colors.textSecondary,
+    },
   };
 
   if (loading) {
@@ -349,299 +645,6 @@ const DashboardScreen = () => {
   );
 };
 
-const styles = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: theme.colors.backgroundLight,
-    fontFamily: 'system-ui, -apple-system, sans-serif',
-  },
-  header: {
-    background: theme.gradients.primary,
-    padding: '16px 0',
-    boxShadow: theme.shadows.md,
-    position: 'sticky',
-    top: 0,
-    zIndex: 100,
-  },
-  headerContent: {
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: '0 24px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  logo: {
-    fontSize: '24px',
-    fontWeight: '700',
-    color: theme.colors.white,
-    margin: 0,
-  },
-  headerRight: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-  },
-  headerButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '8px 16px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    color: theme.colors.white,
-    border: 'none',
-    borderRadius: theme.borderRadius.md,
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: '600',
-    transition: 'all 0.3s',
-  },
-  userEmail: {
-    color: theme.colors.white,
-    fontSize: '14px',
-  },
-  logoutButton: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '8px 12px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    color: theme.colors.white,
-    border: 'none',
-    borderRadius: theme.borderRadius.md,
-    cursor: 'pointer',
-    transition: 'all 0.3s',
-  },
-  mainContent: {
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: '40px 24px',
-  },
-  welcomeSection: {
-    marginBottom: '32px',
-  },
-  welcomeTitle: {
-    fontSize: '32px',
-    fontWeight: '700',
-    color: theme.colors.textPrimary,
-    margin: '0 0 8px 0',
-  },
-  welcomeSubtitle: {
-    fontSize: '18px',
-    color: theme.colors.textSecondary,
-    margin: 0,
-  },
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '20px',
-    marginBottom: '40px',
-  },
-  statCard: {
-    backgroundColor: theme.colors.white,
-    padding: '24px',
-    borderRadius: theme.borderRadius.lg,
-    boxShadow: theme.shadows.sm,
-    textAlign: 'center',
-    transition: 'transform 0.2s',
-  },
-  statIconContainer: {
-    width: '56px',
-    height: '56px',
-    margin: '0 auto 16px',
-    borderRadius: '50%',
-    backgroundColor: theme.colors.backgroundLight,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  statNumber: {
-    fontSize: '32px',
-    fontWeight: '700',
-    color: theme.colors.primary,
-    margin: '0 0 8px 0',
-  },
-  statLabel: {
-    fontSize: '14px',
-    color: theme.colors.textSecondary,
-    margin: 0,
-  },
-  miniProgressBar: {
-    width: '100%',
-    height: '4px',
-    backgroundColor: theme.colors.gray200,
-    borderRadius: '2px',
-    overflow: 'hidden',
-    marginTop: '12px',
-  },
-  miniProgressFill: {
-    height: '100%',
-    background: theme.gradients.success,
-    transition: 'width 0.3s',
-  },
-  continueCard: {
-    background: theme.gradients.primary,
-    borderRadius: theme.borderRadius.xl,
-    padding: '32px',
-    marginBottom: '40px',
-    boxShadow: theme.shadows.lg,
-  },
-  continueContent: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '24px',
-  },
-  continueIcon: {
-    width: '64px',
-    height: '64px',
-    borderRadius: '50%',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  continueText: {
-    flex: 1,
-    color: theme.colors.white,
-  },
-  continueTitle: {
-    fontSize: '24px',
-    fontWeight: '700',
-    margin: '0 0 8px 0',
-  },
-  continueSubtitle: {
-    fontSize: '16px',
-    opacity: 0.9,
-    margin: 0,
-  },
-  continueButton: {
-    padding: '14px 32px',
-    backgroundColor: theme.colors.white,
-    color: theme.colors.primary,
-    border: 'none',
-    borderRadius: theme.borderRadius.full,
-    fontSize: '16px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    boxShadow: theme.shadows.md,
-    transition: 'all 0.2s',
-  },
-  section: {
-    marginBottom: '40px',
-  },
-  sectionHeader: {
-    marginBottom: '24px',
-  },
-  sectionTitleRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    marginBottom: '8px',
-  },
-  sectionTitle: {
-    fontSize: '24px',
-    fontWeight: '700',
-    color: theme.colors.textPrimary,
-    margin: 0,
-  },
-  sectionSubtitle: {
-    fontSize: '14px',
-    color: theme.colors.textSecondary,
-    margin: 0,
-  },
-  chartCard: {
-    backgroundColor: theme.colors.white,
-    padding: '32px',
-    borderRadius: theme.borderRadius.lg,
-    boxShadow: theme.shadows.sm,
-  },
-  chart: {
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
-    gap: '12px',
-    height: '240px',
-  },
-  chartBar: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '8px',
-  },
-  chartBarContainer: {
-    flex: 1,
-    width: '100%',
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  chartBarFill: {
-    width: '100%',
-    minHeight: '4px',
-    borderRadius: '4px 4px 0 0',
-    transition: 'all 0.3s',
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    paddingTop: '8px',
-  },
-  chartBarValue: {
-    fontSize: '12px',
-    fontWeight: '700',
-    color: theme.colors.white,
-  },
-  chartBarLabel: {
-    fontSize: '12px',
-    color: theme.colors.textSecondary,
-  },
-  actionsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '20px',
-  },
-  actionCard: {
-    backgroundColor: theme.colors.white,
-    padding: '32px',
-    borderRadius: theme.borderRadius.lg,
-    boxShadow: theme.shadows.sm,
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-  },
-  actionIconContainer: {
-    marginBottom: '16px',
-  },
-  actionTitle: {
-    fontSize: '20px',
-    fontWeight: '600',
-    color: theme.colors.textPrimary,
-    margin: '0 0 8px 0',
-  },
-  actionText: {
-    fontSize: '14px',
-    color: theme.colors.textSecondary,
-    margin: 0,
-  },
-  loadingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-  },
-  spinner: {
-    width: '50px',
-    height: '50px',
-    border: `4px solid ${theme.colors.gray200}`,
-    borderTop: `4px solid ${theme.colors.primary}`,
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
-  },
-  loadingText: {
-    marginTop: '20px',
-    fontSize: '16px',
-    color: theme.colors.textSecondary,
-  },
-};
+
 
 export default DashboardScreen;

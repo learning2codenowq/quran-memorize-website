@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { theme } from '../styles/theme';
+import { useSettings } from '../contexts/SettingsContext';
+import { useTheme } from '../hooks/useTheme';
 import StorageService from '../services/StorageService';
 import QuranService from '../services/QuranService';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../config/firebase';
 import {
   User,
   Target,
@@ -29,19 +28,8 @@ import {
 const SettingsScreen = () => {
   const navigate = useNavigate();
   const { currentUser, logout } = useAuth();
-  
-  const [settings, setSettings] = useState({
-    userName: 'User',
-    dailyGoal: 10,
-    darkMode: false,
-    showTranslations: true,
-    arabicFontSize: 'Medium',
-    translationFontSize: 'Medium',
-    autoPlayNext: false,
-    selectedReciter: null,
-    scriptType: 'uthmani'
-  });
-  
+  const { settings, updateSetting } = useSettings();
+  const theme = useTheme();
   const [reciters, setReciters] = useState([]);
   const [showNameModal, setShowNameModal] = useState(false);
   const [showDailyGoalModal, setShowDailyGoalModal] = useState(false);
@@ -52,22 +40,9 @@ const SettingsScreen = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadSettings();
-    loadReciters();
-  }, []);
-
-  const loadSettings = () => {
-    try {
-      const state = StorageService.getState();
-      if (state?.settings) {
-        setSettings(state.settings);
-      }
-    } catch (error) {
-      console.error('Error loading settings:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  loadReciters();
+  setLoading(false);
+}, []);
 
   const loadReciters = async () => {
     try {
@@ -75,28 +50,6 @@ const SettingsScreen = () => {
       setReciters(recitersList);
     } catch (error) {
       console.error('Error loading reciters:', error);
-    }
-  };
-
-  const updateSetting = async (key, value) => {
-    try {
-      const state = StorageService.getState();
-      if (!state) return;
-
-      state.settings[key] = value;
-      StorageService.saveState(state);
-      setSettings({ ...settings, [key]: value });
-
-      // Sync to Firestore
-      if (currentUser) {
-        const userRef = doc(db, 'users', currentUser.uid);
-        await setDoc(userRef, {
-          settings: state.settings,
-          lastUpdated: new Date().toISOString()
-        }, { merge: true });
-      }
-    } catch (error) {
-      console.error('Error updating setting:', error);
     }
   };
 
@@ -125,6 +78,376 @@ const SettingsScreen = () => {
     const reciter = reciters.find(r => r.id === settings.selectedReciter);
     return reciter ? reciter.name : 'Mishary Alafasy (Default)';
   };
+
+  const styles = {
+    container: {
+      minHeight: '100vh',
+      backgroundColor: theme.colors.backgroundLight,
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+    },
+    header: {
+      background: theme.gradients.primary,
+      padding: '16px 0',
+      boxShadow: theme.shadows.md,
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+    },
+    headerContent: {
+      maxWidth: '1200px',
+      margin: '0 auto',
+      padding: '0 24px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    headerLeft: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '16px',
+    },
+    backBtn: {
+      padding: '8px 16px',
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      color: theme.colors.white,
+      border: 'none',
+      borderRadius: theme.borderRadius.md,
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: '600',
+    },
+    logo: {
+      fontSize: '24px',
+      fontWeight: '700',
+      color: theme.colors.white,
+      margin: 0,
+    },
+    headerRight: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+    },
+    navButton: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      padding: '8px 16px',
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      color: theme.colors.white,
+      border: 'none',
+      borderRadius: theme.borderRadius.md,
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: '600',
+    },
+    logoutButton: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: '8px 12px',
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      color: theme.colors.white,
+      border: 'none',
+      borderRadius: theme.borderRadius.md,
+      cursor: 'pointer',
+    },
+    mainContent: {
+      maxWidth: '800px',
+      margin: '0 auto',
+      padding: '40px 24px',
+    },
+    section: {
+      marginBottom: '40px',
+    },
+    sectionHeader: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      marginBottom: '16px',
+    },
+    sectionTitle: {
+      fontSize: '20px',
+      fontWeight: '700',
+      color: theme.colors.textPrimary,
+      margin: 0,
+    },
+    settingsList: {
+      backgroundColor: theme.colors.cardBackground,
+      borderRadius: theme.borderRadius.lg,
+      boxShadow: theme.shadows.sm,
+      overflow: 'hidden',
+    },
+    settingItem: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '20px 24px',
+      borderBottom: `1px solid ${theme.colors.gray200}`,
+      cursor: 'pointer',
+      transition: 'background-color 0.2s',
+    },
+    settingLeft: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '16px',
+      flex: 1,
+    },
+    settingTextContainer: {
+      flex: 1,
+    },
+    settingTitle: {
+      fontSize: '16px',
+      fontWeight: '600',
+      color: theme.colors.textPrimary,
+      margin: '0 0 4px 0',
+    },
+    settingSubtitle: {
+      fontSize: '14px',
+      color: theme.colors.textSecondary,
+      margin: 0,
+    },
+    switch: {
+      position: 'relative',
+      display: 'inline-block',
+      width: '52px',
+      height: '28px',
+    },
+    switchInput: {
+      opacity: 0,
+      width: 0,
+      height: 0,
+    },
+    switchSlider: {
+      position: 'absolute',
+      cursor: 'pointer',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: theme.colors.gray300,
+      transition: '0.4s',
+      borderRadius: '28px',
+    },
+    modalOverlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: '20px',
+    },
+    modalContent: {
+      backgroundColor: theme.colors.cardBackground,
+      borderRadius: theme.borderRadius.xl,
+      width: '100%',
+      maxWidth: '500px',
+      maxHeight: '80vh',
+      overflow: 'hidden',
+      boxShadow: theme.shadows.xl,
+    },
+    modalHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      padding: '24px',
+      borderBottom: `1px solid ${theme.colors.gray200}`,
+    },
+    modalTitle: {
+      fontSize: '24px',
+      fontWeight: '700',
+      color: theme.colors.textPrimary,
+      margin: '0 0 4px 0',
+    },
+    modalSubtitle: {
+      fontSize: '14px',
+      color: theme.colors.textSecondary,
+      margin: 0,
+    },
+    modalCloseButton: {
+      padding: '8px',
+      backgroundColor: 'transparent',
+      border: 'none',
+      cursor: 'pointer',
+      color: theme.colors.textSecondary,
+      borderRadius: theme.borderRadius.md,
+      transition: 'background-color 0.2s',
+    },
+    modalBody: {
+      padding: '24px',
+      maxHeight: 'calc(80vh - 100px)',
+      overflowY: 'auto',
+    },
+    input: {
+      width: '100%',
+      padding: '12px 16px',
+      fontSize: '16px',
+      border: `2px solid ${theme.colors.gray200}`,
+      borderRadius: theme.borderRadius.md,
+      outline: 'none',
+      marginBottom: '16px',
+      boxSizing: 'border-box',
+      backgroundColor: theme.colors.background,
+      color: theme.colors.textPrimary,
+    },
+    modalButton: {
+      width: '100%',
+      padding: '14px',
+      backgroundColor: theme.colors.primary,
+      color: theme.colors.white,
+      border: 'none',
+      borderRadius: theme.borderRadius.full,
+      fontSize: '16px',
+      fontWeight: '600',
+      cursor: 'pointer',
+    },
+    optionsList: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+    },
+    optionItem: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '16px 20px',
+      backgroundColor: theme.colors.backgroundLight,
+      borderRadius: theme.borderRadius.md,
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      border: `2px solid transparent`,
+    },
+    optionItemSelected: {
+      backgroundColor: theme.colors.successLight,
+      border: `2px solid ${theme.colors.success}`,
+    },
+    optionText: {
+      fontSize: '16px',
+      fontWeight: '600',
+      color: theme.colors.textPrimary,
+    },
+    reciterList: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      maxHeight: '400px',
+      overflowY: 'auto',
+    },
+    reciterItem: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '16px 20px',
+      backgroundColor: theme.colors.backgroundLight,
+      borderRadius: theme.borderRadius.md,
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      border: `2px solid transparent`,
+    },
+    reciterItemSelected: {
+      backgroundColor: theme.colors.successLight,
+      border: `2px solid ${theme.colors.success}`,
+    },
+    reciterName: {
+      fontSize: '16px',
+      fontWeight: '600',
+      color: theme.colors.textPrimary,
+      margin: '0 0 4px 0',
+    },
+    reciterStyle: {
+      fontSize: '13px',
+      color: theme.colors.textSecondary,
+      margin: 0,
+    },
+    loadingContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100vh',
+    },
+    spinner: {
+      width: '50px',
+      height: '50px',
+      border: `4px solid ${theme.colors.gray200}`,
+      borderTop: `4px solid ${theme.colors.primary}`,
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite',
+    },
+    loadingText: {
+      marginTop: '20px',
+      fontSize: '16px',
+      color: theme.colors.textSecondary,
+    },
+  };
+  React.useEffect(() => {
+    const styleSheet = document.styleSheets[0];
+    if (styleSheet) {
+      // Remove old rules if they exist
+      const rulesToRemove = [];
+      for (let i = 0; i < styleSheet.cssRules.length; i++) {
+        const rule = styleSheet.cssRules[i];
+        if (rule.selectorText && 
+            (rule.selectorText.includes('switchSlider') || 
+             rule.selectorText.includes('input:checked'))) {
+          rulesToRemove.push(i);
+        }
+      }
+      rulesToRemove.reverse().forEach(i => styleSheet.deleteRule(i));
+
+      // Add new rules with current theme
+      styleSheet.insertRule(`
+        input:checked + .switchSlider {
+          background-color: ${theme.colors.success} !important;
+        }
+      `, styleSheet.cssRules.length);
+
+      styleSheet.insertRule(`
+        .switchSlider:before {
+          position: absolute;
+          content: "";
+          height: 20px;
+          width: 20px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          transition: 0.4s;
+          border-radius: 50%;
+        }
+      `, styleSheet.cssRules.length);
+
+      styleSheet.insertRule(`
+        input:checked + .switchSlider:before {
+          transform: translateX(24px);
+        }
+      `, styleSheet.cssRules.length);
+    }
+  }, [theme]);
+
+  // Modal Component
+const Modal = ({ title, subtitle, onClose, children }) => {
+  return (
+    <div style={styles.modalOverlay} onClick={onClose}>
+      <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <div style={styles.modalHeader}>
+          <div>
+            <h3 style={styles.modalTitle}>{title}</h3>
+            {subtitle && <p style={styles.modalSubtitle}>{subtitle}</p>}
+          </div>
+          <button onClick={onClose} style={styles.modalCloseButton}>
+            <X size={24} />
+          </button>
+        </div>
+        <div style={styles.modalBody}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
 
   if (loading) {
     return (
@@ -541,360 +864,5 @@ const SettingsScreen = () => {
     </div>
   );
 };
-
-// Modal Component
-const Modal = ({ title, subtitle, onClose, children }) => {
-  return (
-    <div style={styles.modalOverlay} onClick={onClose}>
-      <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <div style={styles.modalHeader}>
-          <div>
-            <h3 style={styles.modalTitle}>{title}</h3>
-            {subtitle && <p style={styles.modalSubtitle}>{subtitle}</p>}
-          </div>
-          <button onClick={onClose} style={styles.modalCloseButton}>
-            <X size={24} />
-          </button>
-        </div>
-        <div style={styles.modalBody}>
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: theme.colors.backgroundLight,
-    fontFamily: 'system-ui, -apple-system, sans-serif',
-  },
-  header: {
-    background: theme.gradients.primary,
-    padding: '16px 0',
-    boxShadow: theme.shadows.md,
-    position: 'sticky',
-    top: 0,
-    zIndex: 100,
-  },
-  headerContent: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '0 24px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-  },
-  backBtn: {
-    padding: '8px 16px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    color: theme.colors.white,
-    border: 'none',
-    borderRadius: theme.borderRadius.md,
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: '600',
-  },
-  logo: {
-    fontSize: '24px',
-    fontWeight: '700',
-    color: theme.colors.white,
-    margin: 0,
-  },
-  headerRight: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-  },
-  navButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '8px 16px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    color: theme.colors.white,
-    border: 'none',
-    borderRadius: theme.borderRadius.md,
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: '600',
-  },
-  logoutButton: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '8px 12px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    color: theme.colors.white,
-    border: 'none',
-    borderRadius: theme.borderRadius.md,
-    cursor: 'pointer',
-  },
-  mainContent: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    padding: '40px 24px',
-  },
-  section: {
-    marginBottom: '40px',
-  },
-  sectionHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    marginBottom: '16px',
-  },
-  sectionTitle: {
-    fontSize: '20px',
-    fontWeight: '700',
-    color: theme.colors.textPrimary,
-    margin: 0,
-  },
-  settingsList: {
-    backgroundColor: theme.colors.white,
-    borderRadius: theme.borderRadius.lg,
-    boxShadow: theme.shadows.sm,
-    overflow: 'hidden',
-  },
-  settingItem: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '20px 24px',
-    borderBottom: `1px solid ${theme.colors.gray200}`,
-    cursor: 'pointer',
-    transition: 'background-color 0.2s',
-  },
-  settingLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-    flex: 1,
-  },
-  settingTextContainer: {
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: theme.colors.textPrimary,
-    margin: '0 0 4px 0',
-  },
-  settingSubtitle: {
-    fontSize: '14px',
-    color: theme.colors.textSecondary,
-    margin: 0,
-  },
-  switch: {
-    position: 'relative',
-    display: 'inline-block',
-    width: '52px',
-    height: '28px',
-  },
-  switchInput: {
-    opacity: 0,
-    width: 0,
-    height: 0,
-  },
-  switchSlider: {
-    position: 'absolute',
-    cursor: 'pointer',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: theme.colors.gray300,
-    transition: '0.4s',
-    borderRadius: '28px',
-  },
-  modalOverlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1000,
-    padding: '20px',
-  },
-  modalContent: {
-    backgroundColor: theme.colors.white,
-    borderRadius: theme.borderRadius.xl,
-    width: '100%',
-    maxWidth: '500px',
-    maxHeight: '80vh',
-    overflow: 'hidden',
-    boxShadow: theme.shadows.xl,
-  },
-  modalHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: '24px',
-    borderBottom: `1px solid ${theme.colors.gray200}`,
-  },
-  modalTitle: {
-    fontSize: '24px',
-    fontWeight: '700',
-    color: theme.colors.textPrimary,
-    margin: '0 0 4px 0',
-  },
-  modalSubtitle: {
-    fontSize: '14px',
-    color: theme.colors.textSecondary,
-    margin: 0,
-  },
-  modalCloseButton: {
-    padding: '8px',
-    backgroundColor: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
-    color: theme.colors.textSecondary,
-    borderRadius: theme.borderRadius.md,
-    transition: 'background-color 0.2s',
-  },
-  modalBody: {
-    padding: '24px',
-    maxHeight: 'calc(80vh - 100px)',
-    overflowY: 'auto',
-  },
-  input: {
-    width: '100%',
-    padding: '12px 16px',
-    fontSize: '16px',
-    border: `2px solid ${theme.colors.gray200}`,
-    borderRadius: theme.borderRadius.md,
-    outline: 'none',
-    marginBottom: '16px',
-    boxSizing: 'border-box',
-  },
-  modalButton: {
-    width: '100%',
-    padding: '14px',
-    backgroundColor: theme.colors.primary,
-    color: theme.colors.white,
-    border: 'none',
-    borderRadius: theme.borderRadius.full,
-    fontSize: '16px',
-    fontWeight: '600',
-    cursor: 'pointer',
-  },
-  optionsList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-  },
-  optionItem: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '16px 20px',
-    backgroundColor: theme.colors.backgroundLight,
-    borderRadius: theme.borderRadius.md,
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    border: `2px solid transparent`,
-  },
-  optionItemSelected: {
-    backgroundColor: theme.colors.successLight,
-    border: `2px solid ${theme.colors.success}`,
-  },
-  optionText: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: theme.colors.textPrimary,
-  },
-  reciterList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    maxHeight: '400px',
-    overflowY: 'auto',
-  },
-  reciterItem: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '16px 20px',
-    backgroundColor: theme.colors.backgroundLight,
-    borderRadius: theme.borderRadius.md,
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    border: `2px solid transparent`,
-  },
-  reciterItemSelected: {
-    backgroundColor: theme.colors.successLight,
-    border: `2px solid ${theme.colors.success}`,
-  },
-  reciterName: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: theme.colors.textPrimary,
-    margin: '0 0 4px 0',
-  },
-  reciterStyle: {
-    fontSize: '13px',
-    color: theme.colors.textSecondary,
-    margin: 0,
-  },
-  loadingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-  },
-  spinner: {
-    width: '50px',
-    height: '50px',
-    border: `4px solid ${theme.colors.gray200}`,
-    borderTop: `4px solid ${theme.colors.primary}`,
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
-  },
-  loadingText: {
-    marginTop: '20px',
-    fontSize: '16px',
-    color: theme.colors.textSecondary,
-  },
-};
-
-// Add CSS for toggle switch
-const styleSheet = document.styleSheets[0];
-if (styleSheet) {
-  styleSheet.insertRule(`
-    input:checked + .switchSlider {
-      background-color: ${theme.colors.success};
-    }
-  `, styleSheet.cssRules.length);
-
-  styleSheet.insertRule(`
-    .switchSlider:before {
-      position: absolute;
-      content: "";
-      height: 20px;
-      width: 20px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: 0.4s;
-      border-radius: 50%;
-    }
-  `, styleSheet.cssRules.length);
-
-  styleSheet.insertRule(`
-    input:checked + .switchSlider:before {
-      transform: translateX(24px);
-    }
-  `, styleSheet.cssRules.length);
-}
 
 export default SettingsScreen;

@@ -6,6 +6,7 @@ import SignupScreen from './screens/SignupScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import SurahListScreen from './screens/SurahListScreen';
 import QuranReaderScreen from './screens/QuranReaderScreen';
+import { SettingsProvider } from './contexts/SettingsContext';
 import SettingsScreen from './screens/SettingsScreen';
 
 // Protected Route Component
@@ -24,61 +25,63 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Routes>
-          {/* Public Routes */}
-          <Route 
-            path="/login" 
-            element={
-              <PublicRoute>
-                <LoginScreen />
-              </PublicRoute>
-            } 
-          />
-          <Route 
-            path="/signup" 
-            element={
-              <PublicRoute>
-                <SignupScreen />
-              </PublicRoute>
-            } 
-          />
-          
-          {/* Protected Routes */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <DashboardScreen />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/surahs" 
-            element={
-              <ProtectedRoute>
-                <SurahListScreen />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/quran-reader/:surahId" 
-            element={
-              <ProtectedRoute>
-                <QuranReaderScreen />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/settings" 
-            element={
-              <ProtectedRoute>
-                <SettingsScreen />
-              </ProtectedRoute>
-            } 
-          />
-          {/* Default Route */}
-          <Route path="/" element={<Navigate to="/login" />} />
-        </Routes>
+        <SettingsProvider>
+          <Routes>
+            {/* Public Routes */}
+            <Route 
+              path="/login" 
+              element={
+                <PublicRoute>
+                  <LoginScreen />
+                </PublicRoute>
+              } 
+            />
+            <Route 
+              path="/signup" 
+              element={
+                <PublicRoute>
+                  <SignupScreen />
+                </PublicRoute>
+              } 
+            />
+            
+            {/* Protected Routes */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <DashboardScreen />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/surahs" 
+              element={
+                <ProtectedRoute>
+                  <SurahListScreen />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/quran-reader/:surahId" 
+              element={
+                <ProtectedRoute>
+                  <QuranReaderScreen />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/settings" 
+              element={
+                <ProtectedRoute>
+                  <SettingsScreen />
+                </ProtectedRoute>
+              } 
+            />
+            {/* Default Route */}
+            <Route path="/" element={<Navigate to="/login" />} />
+          </Routes>
+        </SettingsProvider>
       </AuthProvider>
     </Router>
   );

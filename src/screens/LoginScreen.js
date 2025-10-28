@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { theme } from '../styles/theme';
+import { useTheme } from '../hooks/useTheme';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -11,6 +11,7 @@ const LoginScreen = () => {
   
   const { login, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,6 +46,210 @@ const LoginScreen = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const styles = {
+    container: {
+      display: 'flex',
+      minHeight: '100vh',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+    },
+    leftSection: {
+      flex: 1,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '40px',
+      backgroundColor: theme.colors.backgroundLight,
+    },
+    rightSection: {
+      flex: 1,
+      background: theme.gradients.primaryDark || theme.gradients.primary,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '40px',
+      '@media (max-width: 768px)': {
+        display: 'none',
+      }
+    },
+    contentWrapper: {
+      width: '100%',
+      maxWidth: '440px',
+    },
+    logoSection: {
+      textAlign: 'center',
+      marginBottom: '48px',
+    },
+    logo: {
+      fontSize: '32px',
+      fontWeight: '700',
+      color: theme.colors.primary,
+      margin: '0 0 8px 0',
+    },
+    tagline: {
+      fontSize: '16px',
+      color: theme.colors.textSecondary,
+      margin: 0,
+    },
+    form: {
+      backgroundColor: theme.colors.cardBackground,
+      padding: '40px',
+      borderRadius: theme.borderRadius.xl,
+      boxShadow: theme.shadows.lg,
+    },
+    title: {
+      fontSize: '28px',
+      fontWeight: '700',
+      color: theme.colors.textPrimary,
+      margin: '0 0 8px 0',
+    },
+    subtitle: {
+      fontSize: '16px',
+      color: theme.colors.textSecondary,
+      margin: '0 0 32px 0',
+    },
+    errorBox: {
+      backgroundColor: '#FEE',
+      color: theme.colors.error,
+      padding: '12px 16px',
+      borderRadius: theme.borderRadius.md,
+      marginBottom: '24px',
+      fontSize: '14px',
+      border: `1px solid ${theme.colors.error}`,
+    },
+    inputGroup: {
+      marginBottom: '24px',
+    },
+    label: {
+      display: 'block',
+      fontSize: '14px',
+      fontWeight: '600',
+      color: theme.colors.textPrimary,
+      marginBottom: '8px',
+    },
+    input: {
+      width: '100%',
+      padding: '12px 16px',
+      fontSize: '16px',
+      border: `2px solid ${theme.colors.gray200}`,
+      borderRadius: theme.borderRadius.md,
+      outline: 'none',
+      transition: 'border-color 0.3s',
+      boxSizing: 'border-box',
+      backgroundColor: theme.colors.background,
+      color: theme.colors.textPrimary,
+    },
+    button: {
+      width: '100%',
+      padding: '14px',
+      fontSize: '16px',
+      fontWeight: '600',
+      color: theme.colors.white,
+      background: theme.gradients.primaryDark || theme.gradients.primary,
+      border: 'none',
+      borderRadius: theme.borderRadius.full,
+      cursor: 'pointer',
+      transition: 'transform 0.2s, box-shadow 0.2s',
+      boxShadow: theme.shadows.md,
+      marginTop: '8px',
+    },
+    buttonDisabled: {
+      width: '100%',
+      padding: '14px',
+      fontSize: '16px',
+      fontWeight: '600',
+      color: theme.colors.white,
+      backgroundColor: theme.colors.gray400,
+      border: 'none',
+      borderRadius: theme.borderRadius.full,
+      cursor: 'not-allowed',
+      marginTop: '8px',
+    },
+    signupText: {
+      textAlign: 'center',
+      marginTop: '24px',
+      fontSize: '14px',
+      color: theme.colors.textSecondary,
+    },
+    link: {
+      color: theme.colors.primary,
+      fontWeight: '600',
+      textDecoration: 'none',
+    },
+    quoteSection: {
+      textAlign: 'center',
+      maxWidth: '500px',
+      color: theme.colors.white,
+    },
+    quoteIcon: {
+      fontSize: '64px',
+      marginBottom: '24px',
+    },
+    quoteTitle: {
+      fontSize: '24px',
+      fontWeight: '600',
+      lineHeight: '1.5',
+      marginBottom: '16px',
+    },
+    quoteAuthor: {
+      fontSize: '16px',
+      opacity: 0.9,
+    },
+    divider: {
+      display: 'flex',
+      alignItems: 'center',
+      margin: '24px 0',
+    },
+    dividerLine: {
+      flex: 1,
+      height: '1px',
+      backgroundColor: theme.colors.gray300,
+    },
+    dividerText: {
+      padding: '0 16px',
+      fontSize: '14px',
+      color: theme.colors.textMuted,
+      fontWeight: '500',
+    },
+    googleButton: {
+      width: '100%',
+      padding: '14px',
+      fontSize: '16px',
+      fontWeight: '600',
+      color: theme.colors.textPrimary,
+      backgroundColor: theme.colors.cardBackground,
+      border: `2px solid ${theme.colors.gray300}`,
+      borderRadius: theme.borderRadius.full,
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '12px',
+    },
+    googleButtonDisabled: {
+      width: '100%',
+      padding: '14px',
+      fontSize: '16px',
+      fontWeight: '600',
+      color: theme.colors.textMuted,
+      backgroundColor: theme.colors.gray100,
+      border: `2px solid ${theme.colors.gray300}`,
+      borderRadius: theme.borderRadius.full,
+      cursor: 'not-allowed',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '12px',
+    },
+    googleIcon: {
+      fontSize: '18px',
+      fontWeight: '700',
+      background: theme.gradients.primary,
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+    },
   };
 
   return (
@@ -137,206 +342,5 @@ const LoginScreen = () => {
   );
 };
 
-const styles = {
-  container: {
-    display: 'flex',
-    minHeight: '100vh',
-    fontFamily: 'system-ui, -apple-system, sans-serif',
-  },
-  leftSection: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '40px',
-    backgroundColor: theme.colors.backgroundLight,
-  },
-  rightSection: {
-    flex: 1,
-    background: theme.gradients.primary,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '40px',
-    '@media (max-width: 768px)': {
-      display: 'none',
-    }
-  },
-  contentWrapper: {
-    width: '100%',
-    maxWidth: '440px',
-  },
-  logoSection: {
-    textAlign: 'center',
-    marginBottom: '48px',
-  },
-  logo: {
-    fontSize: '32px',
-    fontWeight: '700',
-    color: theme.colors.primary,
-    margin: '0 0 8px 0',
-  },
-  tagline: {
-    fontSize: '16px',
-    color: theme.colors.textSecondary,
-    margin: 0,
-  },
-  form: {
-    backgroundColor: theme.colors.white,
-    padding: '40px',
-    borderRadius: theme.borderRadius.xl,
-    boxShadow: theme.shadows.lg,
-  },
-  title: {
-    fontSize: '28px',
-    fontWeight: '700',
-    color: theme.colors.textPrimary,
-    margin: '0 0 8px 0',
-  },
-  subtitle: {
-    fontSize: '16px',
-    color: theme.colors.textSecondary,
-    margin: '0 0 32px 0',
-  },
-  errorBox: {
-    backgroundColor: '#FEE',
-    color: theme.colors.error,
-    padding: '12px 16px',
-    borderRadius: theme.borderRadius.md,
-    marginBottom: '24px',
-    fontSize: '14px',
-    border: `1px solid ${theme.colors.error}`,
-  },
-  inputGroup: {
-    marginBottom: '24px',
-  },
-  label: {
-    display: 'block',
-    fontSize: '14px',
-    fontWeight: '600',
-    color: theme.colors.textPrimary,
-    marginBottom: '8px',
-  },
-  input: {
-    width: '100%',
-    padding: '12px 16px',
-    fontSize: '16px',
-    border: `2px solid ${theme.colors.gray200}`,
-    borderRadius: theme.borderRadius.md,
-    outline: 'none',
-    transition: 'border-color 0.3s',
-    boxSizing: 'border-box',
-  },
-  button: {
-    width: '100%',
-    padding: '14px',
-    fontSize: '16px',
-    fontWeight: '600',
-    color: theme.colors.white,
-    background: theme.gradients.primary,
-    border: 'none',
-    borderRadius: theme.borderRadius.full,
-    cursor: 'pointer',
-    transition: 'transform 0.2s, box-shadow 0.2s',
-    boxShadow: theme.shadows.md,
-    marginTop: '8px',
-  },
-  buttonDisabled: {
-    width: '100%',
-    padding: '14px',
-    fontSize: '16px',
-    fontWeight: '600',
-    color: theme.colors.white,
-    backgroundColor: theme.colors.gray400,
-    border: 'none',
-    borderRadius: theme.borderRadius.full,
-    cursor: 'not-allowed',
-    marginTop: '8px',
-  },
-  signupText: {
-    textAlign: 'center',
-    marginTop: '24px',
-    fontSize: '14px',
-    color: theme.colors.textSecondary,
-  },
-  link: {
-    color: theme.colors.primary,
-    fontWeight: '600',
-    textDecoration: 'none',
-  },
-  quoteSection: {
-    textAlign: 'center',
-    maxWidth: '500px',
-    color: theme.colors.white,
-  },
-  quoteIcon: {
-    fontSize: '64px',
-    marginBottom: '24px',
-  },
-  quoteTitle: {
-    fontSize: '24px',
-    fontWeight: '600',
-    lineHeight: '1.5',
-    marginBottom: '16px',
-  },
-  quoteAuthor: {
-    fontSize: '16px',
-    opacity: 0.9,
-  },
-  divider: {
-    display: 'flex',
-    alignItems: 'center',
-    margin: '24px 0',
-  },
-  dividerLine: {
-    flex: 1,
-    height: '1px',
-    backgroundColor: theme.colors.gray300,
-  },
-  dividerText: {
-    padding: '0 16px',
-    fontSize: '14px',
-    color: theme.colors.textMuted,
-    fontWeight: '500',
-  },
-  googleButton: {
-    width: '100%',
-    padding: '14px',
-    fontSize: '16px',
-    fontWeight: '600',
-    color: theme.colors.textPrimary,
-    backgroundColor: theme.colors.white,
-    border: `2px solid ${theme.colors.gray300}`,
-    borderRadius: theme.borderRadius.full,
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '12px',
-  },
-  googleButtonDisabled: {
-    width: '100%',
-    padding: '14px',
-    fontSize: '16px',
-    fontWeight: '600',
-    color: theme.colors.textMuted,
-    backgroundColor: theme.colors.gray100,
-    border: `2px solid ${theme.colors.gray300}`,
-    borderRadius: theme.borderRadius.full,
-    cursor: 'not-allowed',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '12px',
-  },
-  googleIcon: {
-    fontSize: '18px',
-    fontWeight: '700',
-    background: theme.gradients.primary,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-  },
-};
 
 export default LoginScreen;
